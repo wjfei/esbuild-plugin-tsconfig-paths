@@ -20,14 +20,11 @@ export function getTransformer(options: GetTransformerOptions, matcher: tsPaths.
                     const importPath =
                         node.moduleSpecifier && (node.moduleSpecifier as any).text;
 
-
                     if (!importPath) {
                         return node;
                     }
 
                     const relativePath = getNoAliasPath(sourcePath, importPath, matcher);
-
-
 
                     if (!relativePath) {
                         return node
