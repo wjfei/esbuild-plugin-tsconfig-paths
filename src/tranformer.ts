@@ -4,18 +4,22 @@ import { getNoAliasPath } from './utils';
 
 interface GetTransformerOptions {
     sourcePath: string;
+    tsLib: typeof ts;
 }
 
 export function getTransformer(options: GetTransformerOptions, matcher: tsPaths.MatchPath) {
-    const { sourcePath } = options;
+    const { sourcePath, tsLib } = options;
 
     return (context: ts.TransformationContext): ts.Transformer<any> => {
         return function visitNode(node: any) {
 
             try {
-                if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node) && node.moduleSpecifier) {
+                if (tsLib.isImportDeclaration(node) || tsLib.isExportDeclaration(node) && node.moduleSpecifier) {
+
+
                     const importPath =
-                        node.moduleSpecifier && node.moduleSpecifier.getText();
+                        node.moduleSpecifier && (node.moduleSpecifier as any).text;
+
 
                     if (!importPath) {
                         return node;
@@ -23,21 +27,23 @@ export function getTransformer(options: GetTransformerOptions, matcher: tsPaths.
 
                     const relativePath = getNoAliasPath(sourcePath, importPath, matcher);
 
+
+
                     if (!relativePath) {
                         return node
                     }
 
-                    const newModuleSpecifier = ts.factory.createStringLiteral(relativePath);
+                    const newModuleSpecifier = tsLib.factory.createStringLiteral(relativePath);
                     (newModuleSpecifier as any).parent = node.moduleSpecifier.parent
 
-                    if (ts.isImportDeclaration(node)) {
-                        const newNode = ts.factory.updateImportDeclaration(node, node.modifiers, node.importClause, newModuleSpecifier, node.assertClause);
+                    if (tsLib.isImportDeclaration(node)) {
+                        const newNode = tsLib.factory.updateImportDeclaration(node, node.modifiers, node.importClause, newModuleSpecifier, node.assertClause);
 
                         (newNode as any).flags = node.flags;
 
                         return newNode;
-                    } else if (ts.isExportDeclaration(node)) {
-                        const newNode = ts.factory.updateExportDeclaration(node, node.modifiers, node.isTypeOnly, node.exportClause, newModuleSpecifier, node.assertClause);
+                    } else if (tsLib.isExportDeclaration(node)) {
+                        const newNode = tsLib.factory.updateExportDeclaration(node, node.modifiers, node.isTypeOnly, node.exportClause, newModuleSpecifier, node.assertClause);
 
                         (newNode as any).flags = node.flags;
 
@@ -46,11 +52,12 @@ export function getTransformer(options: GetTransformerOptions, matcher: tsPaths.
                 }
 
             } catch (error) {
+                console.log(error)
                 return node
 
             }
 
-            return ts.visitEachChild(node, visitNode, context);
+            return tsLib.visitEachChild(node, visitNode, context);
         }
     }
 }

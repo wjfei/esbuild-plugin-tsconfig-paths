@@ -1,15 +1,35 @@
 {
   "name": "esbuild-plugin-tsconfig-paths",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "Esbuild plugin: converting tsconfig's paths to relative paths",
+  "homepage": "https://github.com/wjfei/esbuild-plugin-tsconfig-paths/blob/main/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wjfei/esbuild-plugin-tsconfig-paths"
   },
-  "author": "",
-  "license": "ISC",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "es",
+    "lib",
+    "LICENSE",
+    "package.json",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "ts-node ./test/compile.ts",
+    "build": "npm run build:es && npm run build:cjs",
+    "prepublish": "npm run build",
+    "build:es": "tsc --build tsconfig.base.json",
+    "build:cjs": "tsc"
+  },
+  "author": "wujf1@foxmail.com",
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.1.0",
+    "esbuild": "^0.17.18",
+    "ts-node": "^10.9.1",
     "typescript": "5.0.4"
   },
   "dependencies": {

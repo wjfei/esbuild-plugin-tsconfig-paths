@@ -1,19 +1,31 @@
-import tsPaths from 'tsconfig-paths';
-import { DEFAULT_FILTER, PLUGIN_NAME } from "./constants";
-import { TsconfigPathsPluginOptions } from "./typing";
-import { getTsConfig } from "./utils";
+import { createMatchPath } from 'tsconfig-paths/lib/index';
+import { DEFAULT_CONFIG_NAME, DEFAULT_FILTER, PLUGIN_NAME } from "./constants";
 import ts from 'typescript';
 import { getTransformer } from './tranformer';
+import { TsLibFactory } from './TsLibFactory';
 
-
+export interface TsconfigPathsPluginOptions {
+    filter?: RegExp;
+    tsconfig?: string;
+    cwd?:string;
+}
 
 export function tsconfigPathsPlugin(options?: TsconfigPathsPluginOptions) {
-    const { filter, tsconfig, cwd } = options ?? {};
+    const { filter, tsconfig = DEFAULT_CONFIG_NAME, cwd } = options ?? {};
+    const tsLib: typeof ts = new TsLibFactory().import();
 
-    const tsconfigJson = getTsConfig(cwd || process.cwd(), tsconfig);
-    const { paths = {}, baseUrl = './' } = tsconfigJson?.compilerOptions;
+    const tsconfigPath = tsLib.findConfigFile(cwd || process.cwd(), tsLib.sys.fileExists, tsconfig);
 
-    const pathMatcher = tsPaths.createMatchPath(baseUrl!, paths, ['main']);
+
+    const { config, error } = tsLib.readConfigFile(tsconfigPath, tsLib.sys.readFile);
+
+    if (error) {
+        throw error;
+    }
+
+    const { paths = {}, baseUrl = './' } = config?.compilerOptions || {};
+
+    const pathMatcher = createMatchPath(baseUrl!, paths, ['main']);
 
     return {
         name: PLUGIN_NAME,
@@ -21,9 +33,17 @@ export function tsconfigPathsPlugin(options?: TsconfigPathsPluginOptions) {
             build.onLoad({ filter: filter || DEFAULT_FILTER }, (args) => {
                 const fromPath = args.path;
 
-                const program = ts.createProgram([args.path], {});
-                const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
+                const program = tsLib.createProgram([fromPath], {});
+                const sourceFile = program.getSourceFile(fromPath);
+                const tranformer = tsLib.transform(sourceFile, [getTransformer({ sourcePath: fromPath, tsLib }, pathMatcher)])
 
+                const printer = tsLib.createPrinter({ newLine: tsLib.NewLineKind.LineFeed });
+                const code = printer.printFile(tranformer.transformed[0]);
+
+                return {
+                    contents: code,
+                    loader: 'ts'
+                }
             })
         }
     }
