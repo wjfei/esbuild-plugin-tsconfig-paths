@@ -16,9 +16,10 @@ export function getNoAliasPath(sourcePath: string, importPath: string, matcher: 
     if (!result) {
         return null;
     }
+    formatImportPath = result;
 
     if (os.platform() === 'win32') {
-        formatImportPath = result.replace(/\\/g, '/')
+        formatImportPath = formatImportPath.replace(/\\/g, '/')
         formatSourcePath = formatSourcePath.replace(/\\/g, '/')
     }
 

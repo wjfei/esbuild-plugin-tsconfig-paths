@@ -20,7 +20,7 @@
   "scripts": {
     "test": "ts-node ./test/compile.ts",
     "build": "npm run build:es && npm run build:cjs",
-    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build",
     "build:es": "tsc --build tsconfig.base.json",
     "build:cjs": "tsc"
   },
