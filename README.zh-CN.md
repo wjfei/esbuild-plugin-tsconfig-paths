@@ -2,30 +2,29 @@
 
 [English](README.md) | [中文](README.zh-CN.md)
 
-Transform `compilerOptions.paths` alias to relative path;
+将 `compilerOptions.paths` 的别名转换为相对路径。
 
-For example:
+示例：
 
-before transformed
+转换前
 
 ```typescript
 // src/app/index.ts
 import util from "@/utils/util"
 ```
 
-after transformed
+转换后
 ```
 import util from "../utils/util"
 ```
 
-
-## Install
+## 安装
 
 ```sh
 npm install esbuild-plugin-tsconfig-paths --dev
 ```
 
-## Usage
+## 使用
 
 ```typescript
 import { tsconfigPathsPlugin } from "esbuild-plugin-tsconfig-paths";
@@ -36,11 +35,11 @@ esbuild.build({
     plugins: [
         // ... other plugins
         tsconfigPathsPlugin({
-            // Directory of tsconfig file
+            // tsconfig 文件所在目录
             cwd: process.cwd(),
-            // tsconfig filename
+            // tsconfig 文件名
             tsconfig: "custom-tsconfig.json",
-            // which files will be transformed
+            // 需要被转换的文件匹配规则
             filter: /.*/,
         })
     ]

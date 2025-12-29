@@ -15,7 +15,8 @@
     "lib",
     "LICENSE",
     "package.json",
-    "README.md"
+    "README.md",
+    "README.zh-CN.md"
   ],
   "scripts": {
     "test": "ts-node ./test/compile.ts",
