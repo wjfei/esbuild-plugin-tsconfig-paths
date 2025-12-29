@@ -9,7 +9,7 @@
   },
   "main": "lib/index.js",
   "module": "es/index.js",
-  "typings": "dist/index.d.ts",
+  "types": "lib/index.d.ts",
   "files": [
     "es",
     "lib",
