@@ -3,6 +3,7 @@ import { DEFAULT_CONFIG_NAME, DEFAULT_FILTER, PLUGIN_NAME } from "./constants";
 import ts from 'typescript';
 import { getTransformer } from './tranformer';
 import { TsLibFactory } from './TsLibFactory';
+import type { Plugin } from 'esbuild';
 
 export interface TsconfigPathsPluginOptions {
     filter?: RegExp;
@@ -10,7 +11,7 @@ export interface TsconfigPathsPluginOptions {
     cwd?:string;
 }
 
-export function tsconfigPathsPlugin(options?: TsconfigPathsPluginOptions) {
+export function tsconfigPathsPlugin(options?: TsconfigPathsPluginOptions): Plugin {
     const { filter, tsconfig = DEFAULT_CONFIG_NAME, cwd } = options ?? {};
     const tsLib: typeof ts = new TsLibFactory().import();
 
