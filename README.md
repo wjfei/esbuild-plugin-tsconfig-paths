@@ -1,19 +1,20 @@
 # esbuild-plugin-tsconfig-paths
 
-[English](README.md) | [中文](README.zh-CN.md)
+English | [中文](README.zh-CN.md)
 
-Transform `compilerOptions.paths` alias to relative path;
+Converts TypeScript path aliases defined in `tsconfig.json` (`compilerOptions.paths`)
+into relative import paths during an esbuild build. This removes the need for
+runtime alias resolution and makes emitted code portable.
 
-For example:
+## Example
 
-before transformed
-
+Before
 ```typescript
 // src/app/index.ts
 import util from "@/utils/util"
 ```
 
-after transformed
+After
 ```
 import util from "../utils/util"
 ```
@@ -47,3 +48,27 @@ esbuild.build({
 })
 
 ```
+
+## Options
+
+| Option   | Type     | Default          | Description                                   |
+|----------|----------|------------------|-----------------------------------------------|
+| `filter` | `RegExp` | `/.*/`           | Matches files to transform in `onLoad`.       |
+| `tsconfig` | `string` | `tsconfig.json` | Tsconfig filename used to resolve aliases.     |
+| `cwd`    | `string` | `process.cwd()`  | Directory used to locate the tsconfig file.   |
+
+## Notes
+
+- Requires `compilerOptions.paths` in your `tsconfig.json`. `baseUrl` defaults to `./`.
+- Runs in esbuild’s `onLoad` phase and rewrites matched import specifiers to relative paths.
+- Emits with `loader: 'ts'`, targeting TypeScript sources. Avoid matching `.tsx` files with `filter`.
+- Only rewrites static import specifiers; dynamic imports or non-path-based resolution are not changed.
+
+## Why use this
+
+- Ships portable code without relying on runtime alias resolution.
+- Keeps source imports clean with aliases while producing relative paths for consumers.
+
+## License
+
+MIT
