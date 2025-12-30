@@ -1,6 +1,6 @@
 {
   "name": "esbuild-plugin-tsconfig-paths",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Esbuild plugin: converting tsconfig's paths to relative paths",
   "homepage": "https://github.com/wjfei/esbuild-plugin-tsconfig-paths/blob/main/README.md",
   "repository": {
