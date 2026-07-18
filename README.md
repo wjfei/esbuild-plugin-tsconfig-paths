@@ -1,5 +1,10 @@
 # esbuild-plugin-tsconfig-paths
 
+[![npm version](https://img.shields.io/npm/v/esbuild-plugin-tsconfig-paths)](https://www.npmjs.com/package/esbuild-plugin-tsconfig-paths)
+[![npm downloads](https://img.shields.io/npm/dm/esbuild-plugin-tsconfig-paths)](https://www.npmjs.com/package/esbuild-plugin-tsconfig-paths)
+[![npm weekly downloads](https://img.shields.io/npm/dw/esbuild-plugin-tsconfig-paths)](https://www.npmjs.com/package/esbuild-plugin-tsconfig-paths)
+[![license](https://img.shields.io/npm/l/esbuild-plugin-tsconfig-paths)](https://github.com/wjfei/esbuild-plugin-tsconfig-paths/blob/main/LICENSE)
+
 English | [中文](README.zh-CN.md)
 
 Converts TypeScript path aliases defined in `tsconfig.json` (`compilerOptions.paths`)
